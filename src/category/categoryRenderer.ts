@@ -97,37 +97,54 @@ export const renderCategory = (container: HTMLElement, array: ICategory[]) => {
     }
 
     function editItem(event: MouseEvent){
-        const currentTarget = event.currentTarget as HTMLElement;   
-        const parentNode = currentTarget.parentNode?.parentElement;
-        const categoryArray = Storage.getStorage();
-        let itemIndex: number;
+      const currentTarget = event.currentTarget as HTMLElement;   
+      const parentNode = currentTarget.parentNode?.parentElement;
+      const categoryArray = Storage.getStorage();
+      let itemIndex: number;
 
-        if(parentNode){
-            const id = parentNode.id;
-            itemIndex = categoryArray.findIndex(item => item.id === id);
-            console.log(itemIndex)
-        }
+      if(parentNode){
+          const id = parentNode.id;
+          itemIndex = categoryArray.findIndex(item => item.id === id);
+          console.log(itemIndex)
+      }
 
-        const input: HTMLInputElement = document.querySelector('.category-box__name') as HTMLInputElement;
-        input.removeAttribute('readonly');
-        
-        input.addEventListener('focus', event => {
-            if (event.target instanceof HTMLInputElement) {
-                const inputElement = event.target as HTMLInputElement;
-                const { value } = inputElement;
-                if (value) inputElement.setSelectionRange(value.length, value.length);
-            }
-        });
+      const input: HTMLInputElement = document.querySelector('.category-box__name') as HTMLInputElement;
+      input.removeAttribute('readonly');
+      
+      input.addEventListener('focus', event => {
+          if (event.target instanceof HTMLInputElement) {
+              const inputElement = event.target as HTMLInputElement;
+              const { value } = inputElement;
+              if (value) inputElement.setSelectionRange(value.length, value.length);
+          }
+      });
 
-        input.focus();
-        input.addEventListener('blur', (event: Event) => {
-          const target = event.target as HTMLInputElement;
-          input.setAttribute('readonly', 'true');
-          categoryArray[itemIndex].name = target.value;
-          Storage.addToStorage(categoryArray);
-        });
+      input.focus();
+      input.addEventListener('blur', (event: Event) => {
+        const target = event.target as HTMLInputElement;
+        input.setAttribute('readonly', 'true');
+        categoryArray[itemIndex].name = target.value;
+        Storage.addToStorage(categoryArray);
+      });
         
     };
+
+
+    function toggleAccordion() {
+      categoryItem.classList.toggle("active");
+      taskElementsContainer.style.display = categoryItem.classList.contains('active') ? 'flex' : 'none';
+      openButton.innerText = categoryItem.classList.contains('active') ? 'CLOSE' : 'OPEN';
+      progressBar.style.display = categoryItem.classList.contains('active') ? 'block' : 'none';
+      //categoryItem.classList.contains('active') ? showProgressBar() : undefined;
+    }
+
+
+    //SAVE FULLSCREEN OPTION ON REFRESH
+    // if (category.id === selectedCategoryId) { 
+    //     //openElment();
+    // };
+
+    openButton.addEventListener('click', () => {toggleAccordion()});
 
   });
 

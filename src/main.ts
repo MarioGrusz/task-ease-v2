@@ -1,4 +1,4 @@
-import { leaveWelcomePage } from "./utils/utils";
+import { leaveWelcomePage, getCurrentDate } from "./utils/utils";
 import { Category } from "./category/category";
 import { Storage } from "./storage/storage";
 import { renderCategory } from "./category/categoryRenderer";
@@ -40,7 +40,8 @@ form.addEventListener('submit', (event: Event) => {
 
 
 window.addEventListener('DOMContentLoaded', () => {
-    if(categoriesContainer)renderCategory(categoriesContainer, categories)
+    if(categoriesContainer)renderCategory(categoriesContainer, categories);
+    getCurrentDate();
     
 });
 

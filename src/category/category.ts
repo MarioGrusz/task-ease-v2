@@ -6,6 +6,7 @@ export interface ITask {
 }
 
 export class Category {
+    
     id: string;
     name: string;
     tasks: ITask[]; 

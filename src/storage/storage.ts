@@ -6,6 +6,8 @@ export interface ICategory {
     tasks: ITask[],
 };
 
+//change the storage for what i have in another branch
+
 
 export class Storage {
   

@@ -1,9 +1,7 @@
-import { leaveWelcomePage, getCurrentDate } from "./utils/utils";
+import { leaveWelcomePage, getCurrentDate, updateCategoryCounter } from "./utils/utils";
 import { Category } from "./category/category";
 import { Storage } from "./storage/storage";
 import { renderCategory } from "./category/categoryRenderer";
-
-
 
 
 // ****** SELECT ITEMS **********
@@ -21,8 +19,6 @@ const categoriesContainer = document.querySelector<HTMLElement>('.category-box-c
 //Categories
 export let categories = Storage.getStorage();
 
-
-
 nextPageButton?.addEventListener('click', leaveWelcomePage);
 
 form.addEventListener('submit', (event: Event) => {
@@ -34,6 +30,7 @@ form.addEventListener('submit', (event: Event) => {
     
     Storage.updateStorage(newCategory);
     categories = Storage.getStorage();
+    updateCategoryCounter(categories);
     if(categoriesContainer) renderCategory(categoriesContainer, categories);   
     (event.target as HTMLFormElement).reset();
 });
@@ -42,6 +39,7 @@ form.addEventListener('submit', (event: Event) => {
 window.addEventListener('DOMContentLoaded', () => {
     if(categoriesContainer)renderCategory(categoriesContainer, categories);
     getCurrentDate();
+    updateCategoryCounter(categories);
     
 });
 

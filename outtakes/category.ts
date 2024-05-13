@@ -1,48 +1,24 @@
-export interface ITask {
-    id: string;
-    name: string;
-    completed: boolean;
-    remainingTime: number[]
-}
+import { ITask } from "../storage/storage";
 
 export class Category {
-    
-    id: string;
-    name: string;
-    tasks: ITask[]; 
-    taskRatio?: number[];
 
-    constructor(name: string) {
-        this.id = crypto.randomUUID();
-        this.name = name;
-        this.tasks = []; 
-        this.taskRatio = [];
-    }
+  id: number | string;
+  name: string;
+  tasks: ITask[] = [];
+  taskRatio?: number[] = [];
 
-    addTask(task: ITask) {
-        this.tasks.push(task);
-    }
+  constructor(name: string, tasks: ITask[] = [], taskRatio: number[] = []) {
+    this.id = crypto.randomUUID();
+    this.name = name;
+    this.tasks = tasks;
+    this.taskRatio = taskRatio;
+  }
 
-    deleteTask(taskIdToRemove: string) {
-        this.tasks = this.tasks.filter(task => task.id!== taskIdToRemove);
-    }
 
-    completeTask(taskId: string) {
-        const task = this.tasks.find(task => task.id === taskId);
-        if (task) {
-            task.completed = true;
-        }
-    }
-
-    getCompletionRatio(): number {
-        const total = this.tasks.length;
-        const completed = this.tasks.filter(task => task.completed).length;
-        return total === 0? 0 : (completed / total);
-        //this.taskRatio?.push(total)
-    }
-
-    getTaskById(taskId: string): ITask | undefined {
-        return this.tasks.find(task => task.id === taskId);
-    }
+  getCompletionRatio(): void {
+      const total = this.tasks?.length;
+      const completed = this.tasks?.filter(task => task.completed).length;
+      if(total && completed) this.taskRatio?.push(total === 0 ? 0 : (completed / total))
+  }
 }
 

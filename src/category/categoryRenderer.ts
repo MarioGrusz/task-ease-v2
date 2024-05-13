@@ -1,6 +1,9 @@
-import { Storage, ICategory } from "../storage/storage";
+import { ITask, Storage } from "../storage/storage";
+import { Category } from "./category";
+import { updateCategoryCounter } from "../utils/utils";
+import { renderTask } from "../task/taskRenderer";
 
-export const renderCategory = (container: HTMLElement, array: ICategory[]) => {
+export const renderCategory = (container: HTMLElement, array: Category[]) => {
 
   container.innerHTML = '';
 
@@ -83,17 +86,18 @@ export const renderCategory = (container: HTMLElement, array: ICategory[]) => {
     container.appendChild(categoryWrapper); 
 
     function deleteItem(event: MouseEvent) {
-        const currentTarget = event.currentTarget as HTMLElement;   
-        const parentNode = currentTarget.parentNode?.parentElement;
-        
-        if (parentNode) {
-            const id = parentNode.id;
-            Storage.removeFromStorage(id);
-            array = Storage.getStorage();
-            renderCategory(container, array);
-        } else {
-            console.error('Grandparent node is null');
-        }
+      const currentTarget = event.currentTarget as HTMLElement;   
+      const parentNode = currentTarget.parentNode?.parentElement;
+      
+      if (parentNode) {
+        const id = parentNode.id;
+        Storage.removeFromStorage(id);
+        array = Storage.getStorage();
+        updateCategoryCounter(array);
+        renderCategory(container, array);       
+      } else {
+        console.error('Grandparent node is null');
+      }
     }
 
     function editItem(event: MouseEvent){
@@ -103,20 +107,20 @@ export const renderCategory = (container: HTMLElement, array: ICategory[]) => {
       let itemIndex: number;
 
       if(parentNode){
-          const id = parentNode.id;
-          itemIndex = categoryArray.findIndex(item => item.id === id);
-          console.log(itemIndex)
-      }
+        const id = parentNode.id;
+        itemIndex = categoryArray.findIndex(item => item.id === id);
+        console.log(itemIndex)
+      };
 
       const input: HTMLInputElement = document.querySelector('.category-box__name') as HTMLInputElement;
       input.removeAttribute('readonly');
       
       input.addEventListener('focus', event => {
-          if (event.target instanceof HTMLInputElement) {
-              const inputElement = event.target as HTMLInputElement;
-              const { value } = inputElement;
-              if (value) inputElement.setSelectionRange(value.length, value.length);
-          }
+        if (event.target instanceof HTMLInputElement) {
+          const inputElement = event.target as HTMLInputElement;
+          const { value } = inputElement;
+          if (value) inputElement.setSelectionRange(value.length, value.length);
+        }
       });
 
       input.focus();
@@ -144,8 +148,39 @@ export const renderCategory = (container: HTMLElement, array: ICategory[]) => {
     //     //openElment();
     // };
 
-    openButton.addEventListener('click', () => {toggleAccordion()});
+    openButton.addEventListener('click', () => { toggleAccordion() });
 
+    const taskForms = document.querySelectorAll('.new-task-form');
+
+    taskForms.forEach(form =>{
+      const inputField = form.querySelector('.task-input') as HTMLInputElement; 
+
+      form.addEventListener('submit', (event: Event) => {
+        event.preventDefault();
+        const currentTarget = event.currentTarget as HTMLElement; 
+        const parentNode = currentTarget.parentNode?.parentElement;
+        const inputValue = inputField?.value; 
+        let currentCategoryId: string = '';
+        if(parentNode) {
+          currentCategoryId = parentNode.id;
+        }     
+        if (inputValue == null || inputValue.trim() === '') return;
+        const taskName = inputValue
+
+        const task: ITask = {
+          id: crypto.randomUUID(), 
+          name: taskName,
+          completed: false,
+          remainingTime: [],
+        };
+      
+        Storage.addTasksToCategory(currentCategoryId, task);
+        item.tasks.push(task);
+        renderTask(tasksWrapper, item);
+      });
+    })
+
+    renderTask(tasksWrapper, item)
   });
 
 };

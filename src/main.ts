@@ -32,7 +32,7 @@ form.addEventListener('submit', (event: Event) => {
     const categoryName = categoryNameValue.value;
     const newCategory = new Category(categoryName);
     
-    Storage.updateStorage(newCategory);
+    Category.addCategory(newCategory);
     categories = Storage.getStorage();
     if(categoriesContainer) renderCategory(categoriesContainer, categories);   
     (event.target as HTMLFormElement).reset();

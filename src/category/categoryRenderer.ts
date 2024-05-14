@@ -91,7 +91,7 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
       
       if (parentNode) {
         const id = parentNode.id;
-        Storage.removeFromStorage(id);
+        Category.removeCategory(id);
         array = Storage.getStorage();
         updateCategoryCounter(array);
         renderCategory(container, array);       
@@ -109,7 +109,6 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
       if(parentNode){
         const id = parentNode.id;
         itemIndex = categoryArray.findIndex(item => item.id === id);
-        console.log(itemIndex)
       };
 
       const input: HTMLInputElement = document.querySelector('.category-box__name') as HTMLInputElement;
@@ -128,7 +127,7 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
         const target = event.target as HTMLInputElement;
         input.setAttribute('readonly', 'true');
         categoryArray[itemIndex].name = target.value;
-        Storage.addToStorage(categoryArray);
+        Storage.setStorage(categoryArray);
       });
         
     };
@@ -171,12 +170,13 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
           id: crypto.randomUUID(), 
           name: taskName,
           completed: false,
-          remainingTime: [],
+          remainingTime: 40,
         };
       
-        Storage.addTasksToCategory(currentCategoryId, task);
+        Category.addTasks(currentCategoryId, task);
         item.tasks.push(task);
         renderTask(tasksWrapper, item);
+        inputField.value = '';
       });
     })
 

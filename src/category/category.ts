@@ -1,26 +1,30 @@
-import { ITask } from "../storage/storage";
+import { Task } from "../task/task";
 import { Storage } from "../storage/storage";
 
 export class Category {
 
-    id: number | string;
+    id: string;
     name: string;
-    tasks: ITask[] = [];
+    tasks: Task[] = [];
     taskRatio?: number[] = [];
 
-    constructor(name: string, tasks: ITask[] = [], taskRatio: number[] = []) {
+    constructor(name: string, tasks: Task[] = [], taskRatio: number[] = []) {
         this.id = this.generateUniqueId();
         this.name = name;
         this.tasks = tasks;
         this.taskRatio = taskRatio;
     }
 
-    private generateUniqueId(): number | string {
+    private generateUniqueId(): string {
         try {
             return crypto.randomUUID();
         } catch (error) {
             return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
         }
+    }
+
+    private static validateId(id: unknown): id is number | string {
+        return typeof id === 'number' || typeof id === 'string';
     }
     
 
@@ -30,15 +34,18 @@ export class Category {
         Storage.setStorage(categories);
     }
 
-    static findCategoryById(categoryId: string) {
-        const categoryArray = Storage.getStorage(); 
-        return categoryArray.find(category => category.id === categoryId);
-    }
 
     static removeCategory(toRemoveId: number | string): void {
+        if (!this.validateId(toRemoveId)) throw new Error("Invalid ID type")
         let categories = Storage.getStorage();
         const updatedCategories = categories.filter((category) => category.id!== toRemoveId);
         Storage.setStorage(updatedCategories);
+    }
+
+    static findCategoryById(categoryId: string) {
+        if (!this.validateId(categoryId)) throw new Error("Invalid ID type")
+        const categoryArray = Storage.getStorage(); 
+        return categoryArray.find(category => category.id === categoryId);
     }
 
     static updateCategory(category: Category) {
@@ -48,9 +55,8 @@ export class Category {
         Storage.setStorage(categoryArray); 
     }
 
-    static addTasks(categoryIdToFind: string, task: ITask): void {
-        //let categories = Storage.getStorage();
-        //const category = categories.find((category) => category.id === categoryIdToFind);
+    static addTasks(categoryIdToFind: string, task: Task): void {
+        if (!this.validateId(categoryIdToFind)) throw new Error("Invalid ID type")
         const category = this.findCategoryById(categoryIdToFind)
         if (!category) {
             console.error(`Category with ID ${categoryIdToFind} not found.`);
@@ -59,11 +65,7 @@ export class Category {
         if (!category.tasks) category.tasks = [];
         category.tasks.push(task);
         this.updateCategory(category)
-        //category.getCompletionRatio();
-        //Storage.setStorage(categories);
-    }
-
-    
+    }   
 
     public getCompletionRatio(): void {
         const total = this.tasks?.length;

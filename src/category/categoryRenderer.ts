@@ -1,7 +1,9 @@
-import { ITask, Storage } from "../storage/storage";
+import { Storage } from "../storage/storage";
 import { Category } from "./category";
+import { Task } from "../task/task";
 import { updateCategoryCounter } from "../utils/utils";
 import { renderTask } from "../task/taskRenderer";
+import { validateTask } from "../task/task.zod";
 
 export const renderCategory = (container: HTMLElement, array: Category[]) => {
 
@@ -104,6 +106,7 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
       const currentTarget = event.currentTarget as HTMLElement;   
       const parentNode = currentTarget.parentNode?.parentElement;
       const categoryArray = Storage.getStorage();
+      const input: HTMLInputElement = document.querySelector('.category-box__name') as HTMLInputElement;
       let itemIndex: number;
 
       if(parentNode){
@@ -111,9 +114,8 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
         itemIndex = categoryArray.findIndex(item => item.id === id);
       };
 
-      const input: HTMLInputElement = document.querySelector('.category-box__name') as HTMLInputElement;
-      input.removeAttribute('readonly');
-      
+     
+      input.removeAttribute('readonly');      
       input.addEventListener('focus', event => {
         if (event.target instanceof HTMLInputElement) {
           const inputElement = event.target as HTMLInputElement;
@@ -166,12 +168,19 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
         if (inputValue == null || inputValue.trim() === '') return;
         const taskName = inputValue
 
-        const task: ITask = {
+        const task: Task = {
+          parentCategoryId: categoryItem.id,
           id: crypto.randomUUID(), 
           name: taskName,
           completed: false,
-          remainingTime: 40,
+          remainingTime: 0,
         };
+
+        const validationResult = validateTask(task);
+        if (!validationResult.success) {
+          console.error(validationResult.error);
+          return; 
+        }
       
         Category.addTasks(currentCategoryId, task);
         item.tasks.push(task);

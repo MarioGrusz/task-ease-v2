@@ -2,16 +2,26 @@ import { Storage } from "../storage/storage";
 
 export class Task {
 
-  id: number | string;
+  parentCategoryId: string;
+  id: string;
   name: string;
   remainingTime: number;
   completed: boolean;
 
-  constructor(name: string, remainigTime: number, completed = false) {
+  constructor(parentCategoryId: string = '', name: string, remainigTime: number, completed = false) {
+    this.parentCategoryId = parentCategoryId;
     this.id = crypto.randomUUID();
     this.name = name;
     this.remainingTime = remainigTime;
     this.completed = completed;
+  }
+  
+
+  static findTaskById(categoryId: string, taskId: string) {
+    const categoryArray = Storage.getStorage(); 
+    const category = categoryArray.find(category => category.id === categoryId);
+    return category?.tasks.find(task => task.id === taskId);
+    
   }
 
   

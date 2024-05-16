@@ -31,8 +31,13 @@ export const renderTask = (container: HTMLElement, category: Category) => {
         countDown.classList.add('timer-container')
         taskFirst.appendChild(countDown);
 
+
         container.appendChild(taskElement);
-        new Timer(countDown, task)
+        //new Timer(countDown, task)
+        const timer = new Timer(countDown, task, task.parentCategoryId, task.id)
+        timer.remainingSeconds = 55;
+        console.log(timer)
+        //console.log(new Timer(countDown, task, task.parentCategoryId, task.id))
 
         checkboxElement.addEventListener('click', (event: Event) => {
             
@@ -48,7 +53,6 @@ export const renderTask = (container: HTMLElement, category: Category) => {
                 };
             }
         });
-        
 
     });
 };

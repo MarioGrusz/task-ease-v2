@@ -1,11 +1,18 @@
-import { ITask } from "../storage/storage";
 import { Task } from "../task/task";
-
 const notificationTimeBox = document.querySelector('.notification-time-box ') as HTMLElement;
 const timeBoxForm = document.querySelector('.time-form') as HTMLFormElement;
 const timeBoxValue = document.querySelector('.time-value') as HTMLInputElement;
 const timeBoxCloseBtn = document.querySelector('.btn-close-box') as HTMLButtonElement;
 
+
+
+timeBoxForm.addEventListener('submit', (event: Event) => {
+    event.preventDefault();
+    const input = Number(timeBoxValue.value);
+    console.log('INPUT', input)
+    timeBoxValue.value = '';
+  
+});
 
 
 export class Timer {
@@ -17,12 +24,13 @@ export class Timer {
         reset: HTMLElement;
     };
 
-    private categoryId: string | undefined;
-    private taskId: string | undefined;
     interval: number;
     remainingSeconds: number;
+    parentCategoryId: string;
+    taskId: string;
+    task: Task | undefined;
 
-    constructor(container: HTMLElement, task: ITask) {
+    constructor(container: HTMLElement, task: Task, parentCategoryId: string, taskId : string) {
         container.innerHTML = Timer.getHTML();
 
         this.element = {
@@ -31,35 +39,68 @@ export class Timer {
             control: container.querySelector('.timer__btn--control')!,
             reset: container.querySelector('.timer__btn--reset')!,
         };
-
+        this.parentCategoryId = parentCategoryId
+        this.taskId = taskId;
         this.interval = 0;
-        this.remainingSeconds = task.remainingTime;;
+        this.remainingSeconds = task.remainingTime;
 
-        console.log('remSec', this.remainingSeconds)
-        console.log('task', task)
+        this.setupListeners();
+        this.updateInterfaceTime();
+    }
 
-
+    private setupListeners() {
+        
         this.element.reset.addEventListener('click', (event :Event) => {
-            this.getIds(event);
+            //this.getIds(event);
             notificationTimeBox.style.display = 'flex';
-
-            console.log(this.categoryId)
-            console.log(this.taskId)
         });
-        
-        
+               
 
         timeBoxCloseBtn.addEventListener('click', () => {
             notificationTimeBox.style.display = 'none';
         });
 
-        timeBoxForm.addEventListener('submit', (event: Event) => {
-            event.preventDefault();
-            let input = Number(timeBoxValue.value);
-            console.log('timeInput',input)
-            if(this.categoryId && this.taskId) Task.updateRemainingTime(this.categoryId, this.taskId, input)
-            //timeBoxValue.value = '';
-        });
+       
+    }
+
+
+    // private getRemainingTime () {
+    //     let selectedTask;
+    //     if(this.categoryId && this.taskId) selectedTask = Task.findTaskById(this.categoryId, this.taskId)
+    //     return selectedTask?.remainingTime;
+    // }
+
+
+    // private getIds(event: Event) {
+    //     const targetElement = event.target as HTMLElement;
+    //     const categoryItem = targetElement.closest('.category-box');
+    //     const categoryId = categoryItem ? this.getCategoryItemId(categoryItem): '';
+    //     const taskItem = targetElement.closest('.task-item');
+    //     const taskId = taskItem ? this.getTaskId(taskItem) : '';
+
+    //     this.categoryId = categoryId;
+    //     this.taskId = taskId;
+
+    //     console.log({ categoryId, taskId });
+    // }
+
+    // private getCategoryItemId(categoryItem?: Element): string {
+    //     return categoryItem? categoryItem.getAttribute('id') || '' : '';
+    // }
+
+    // private getTaskId(taskItem?: Element): string | undefined {
+    //     if (!taskItem) return undefined;
+    //     const taskIdInput = taskItem.querySelector('.task-first > input') as HTMLInputElement;
+    //     return taskIdInput? taskIdInput.id : undefined;
+    // }
+
+    updateInterfaceTime() {
+        const minutes = Math.floor(this.remainingSeconds / 60);
+        const seconds = this.remainingSeconds % 60;
+    
+        this.element.minutes.textContent = minutes.toString().padStart(2, '0');
+        this.element.seconds.textContent = seconds.toString().padStart(2, '0');
+
     }
 
     static getHTML(): string {
@@ -84,26 +125,4 @@ export class Timer {
         `;
     }
 
-    private getIds(event: Event) {
-        const targetElement = event.target as HTMLElement;
-        const categoryItem = targetElement.closest('.category-box');
-        const categoryId = categoryItem ? this.getCategoryItemId(categoryItem): '';
-        const taskItem = targetElement.closest('.task-item');
-        const taskId = taskItem ? this.getTaskId(taskItem) : '';
-
-        this.categoryId = categoryId;
-        this.taskId = taskId;
-
-        console.log({ categoryId, taskId });
-    }
-
-    private getCategoryItemId(categoryItem?: Element): string {
-        return categoryItem? categoryItem.getAttribute('id') || '' : '';
-    }
-
-    private getTaskId(taskItem?: Element): string | undefined {
-        if (!taskItem) return undefined;
-        const taskIdInput = taskItem.querySelector('.task-first > input') as HTMLInputElement;
-        return taskIdInput? taskIdInput.id : undefined;
-    }
 }

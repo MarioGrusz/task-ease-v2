@@ -1,12 +1,5 @@
 import { Category } from "../category/category";
 
-export interface ITask {
-  id: string;
-  name: string;
-  completed?: boolean;
-  remainingTime: number;
-};
-
 export class Storage {
   private static readonly STORAGE_KEY = 'todo';
 

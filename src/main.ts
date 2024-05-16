@@ -2,6 +2,7 @@ import { leaveWelcomePage, getCurrentDate } from "./utils/utils";
 import { Category } from "./category/category";
 import { Storage } from "./storage/storage";
 import { renderCategory } from "./category/categoryRenderer";
+import { validateCategory } from "./category/category.zod";
 
 
 
@@ -30,13 +31,20 @@ form.addEventListener('submit', (event: Event) => {
     if (categoryNameValue == null || categoryNameValue.value.trim() === '') return;
 
     const categoryName = categoryNameValue.value;
-    const newCategory = new Category(categoryName);
-    
-    Category.addCategory(newCategory);
-    categories = Storage.getStorage();
+    const category = new Category(categoryName);
+
+    const validationResult = validateCategory(category);
+    if (!validationResult.success) {
+        console.error(validationResult.error);
+        return; 
+    }
+
+    Category.addCategory(category);
+    const categories = Storage.getStorage();
     if(categoriesContainer) renderCategory(categoriesContainer, categories);   
     (event.target as HTMLFormElement).reset();
 });
+
 
 
 window.addEventListener('DOMContentLoaded', () => {

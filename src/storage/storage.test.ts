@@ -10,7 +10,10 @@ describe('Storage', () => {
     it('should set items in storage', () => {
         const categoryArray: Category[] = [
             new Category('Test Todo', [
-                { id: "8bccb94e-c69a-4c75-83cf-7aab4fade85c", name: "one", completed: true, remainingTime: [] },
+                {
+                    id: "8bccb94e-c69a-4c75-83cf-7aab4fade85c", name: "one", completed: true, remainingTime: 120,
+                    parentCategoryId: ''
+                },
             ], [50])
         ];
         Storage.setStorage(categoryArray);

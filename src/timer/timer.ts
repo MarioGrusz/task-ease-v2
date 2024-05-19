@@ -5,6 +5,15 @@ const timeBoxValue = document.querySelector('.time-value') as HTMLInputElement;
 const timeBoxCloseBtn = document.querySelector('.btn-close-box') as HTMLButtonElement;
 
 
+//TIMER CLASS IS'T FINISHED YET, FIRST I HAVE TO FIGURE OUT HOW TO 
+//PASS INPUT FROM TIMEBOX FORM TO TARGET TIMER
+//I HAVE ONE FORM FOR ALL INPUTS
+
+//SIDENOTE: I CAN GET CATEGORY ID AND TAKS ID (EACH TASK HAS TIMER)
+//BY CLICKING SETUP/REST BUTTON
+//this.element.reset (parents)
+
+
 
 timeBoxForm.addEventListener('submit', (event: Event) => {
     event.preventDefault();
@@ -50,8 +59,8 @@ export class Timer {
 
     private setupListeners() {
         
-        this.element.reset.addEventListener('click', (event :Event) => {
-            //this.getIds(event);
+        this.element.reset.addEventListener('click', () => {
+
             notificationTimeBox.style.display = 'flex';
         });
                
@@ -63,36 +72,6 @@ export class Timer {
        
     }
 
-
-    // private getRemainingTime () {
-    //     let selectedTask;
-    //     if(this.categoryId && this.taskId) selectedTask = Task.findTaskById(this.categoryId, this.taskId)
-    //     return selectedTask?.remainingTime;
-    // }
-
-
-    // private getIds(event: Event) {
-    //     const targetElement = event.target as HTMLElement;
-    //     const categoryItem = targetElement.closest('.category-box');
-    //     const categoryId = categoryItem ? this.getCategoryItemId(categoryItem): '';
-    //     const taskItem = targetElement.closest('.task-item');
-    //     const taskId = taskItem ? this.getTaskId(taskItem) : '';
-
-    //     this.categoryId = categoryId;
-    //     this.taskId = taskId;
-
-    //     console.log({ categoryId, taskId });
-    // }
-
-    // private getCategoryItemId(categoryItem?: Element): string {
-    //     return categoryItem? categoryItem.getAttribute('id') || '' : '';
-    // }
-
-    // private getTaskId(taskItem?: Element): string | undefined {
-    //     if (!taskItem) return undefined;
-    //     const taskIdInput = taskItem.querySelector('.task-first > input') as HTMLInputElement;
-    //     return taskIdInput? taskIdInput.id : undefined;
-    // }
 
     updateInterfaceTime() {
         const minutes = Math.floor(this.remainingSeconds / 60);

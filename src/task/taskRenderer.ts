@@ -32,13 +32,12 @@ export const renderTask = (container: HTMLElement, category: Category) => {
         taskFirst.appendChild(countDown);
 
 
-        container.appendChild(taskElement);
-        //new Timer(countDown, task)
-        const timer = new Timer(countDown, task, task.parentCategoryId, task.id)
-        timer.remainingSeconds = 55;
-        console.log(timer)
-        //console.log(new Timer(countDown, task, task.parentCategoryId, task.id))
 
+        //THIS THE PLACE WHERE I CREATE AN INSTANCE OF TIMER AND APPEND IT TO CONTAINER 'COUTDOWN'
+        //BUT I HAVE NO IDEA HOW CAN I PASS REMIANING TIME VALUE TO CERTAIN TIMER
+        container.appendChild(taskElement);
+        new Timer(countDown, task, task.parentCategoryId, task.id)
+    
         checkboxElement.addEventListener('click', (event: Event) => {
             
             const target = event.target as HTMLInputElement;

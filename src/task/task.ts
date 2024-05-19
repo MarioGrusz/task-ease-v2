@@ -24,7 +24,8 @@ export class Task {
     
   }
 
-  
+  //TODO Create function one for both functionalities to follow DRY
+
   static toggleCompleted(categoryId: string, taskId: string, newCompletedStatus: boolean) {
     let categoryArray = Storage.getStorage();
     const category = categoryArray.find(category => category.id === categoryId);

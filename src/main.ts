@@ -1,16 +1,12 @@
-import { leaveWelcomePage, getCurrentDate } from "./utils/utils";
-import { Category } from "./category/category";
-import { Storage } from "./storage/storage";
-import { renderCategory } from "./category/categoryRenderer";
-import { validateCategory } from "./category/category.zod";
-
-
-
+import { leaveWelcomePage, getCurrentDate } from './utils/utils';
+import { Category } from './category/category';
+import { Storage } from './storage/storage';
+import { renderCategory } from './category/categoryRenderer';
+import { validateCategory } from './category/category.zod';
 
 // ****** SELECT ITEMS **********
 //Buttons
 const nextPageButton = document.querySelector('.welcome-page__btn') as HTMLButtonElement;
-
 
 //Form
 const form = document.getElementById('new-category-form') as HTMLFormElement;
@@ -21,8 +17,6 @@ const categoriesContainer = document.querySelector<HTMLElement>('.category-box-c
 
 //Categories
 export let categories = Storage.getStorage();
-
-
 
 nextPageButton?.addEventListener('click', leaveWelcomePage);
 
@@ -36,22 +30,16 @@ form.addEventListener('submit', (event: Event) => {
     const validationResult = validateCategory(category);
     if (!validationResult.success) {
         console.error(validationResult.error);
-        return; 
+        return;
     }
 
-    Category.addCategory(category);
+    category.save();
     const categories = Storage.getStorage();
-    if(categoriesContainer) renderCategory(categoriesContainer, categories);   
+    if (categoriesContainer) renderCategory(categoriesContainer, categories);
     (event.target as HTMLFormElement).reset();
 });
 
-
-
 window.addEventListener('DOMContentLoaded', () => {
-    if(categoriesContainer)renderCategory(categoriesContainer, categories);
+    if (categoriesContainer) renderCategory(categoriesContainer, categories);
     getCurrentDate();
-    
 });
-
-
-

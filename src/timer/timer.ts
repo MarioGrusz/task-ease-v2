@@ -1,11 +1,10 @@
-import { Task } from "../task/task";
+import { Task } from '../task/task';
 const notificationTimeBox = document.querySelector('.notification-time-box ') as HTMLElement;
 const timeBoxForm = document.querySelector('.time-form') as HTMLFormElement;
 const timeBoxValue = document.querySelector('.time-value') as HTMLInputElement;
 const timeBoxCloseBtn = document.querySelector('.btn-close-box') as HTMLButtonElement;
 
-
-//TIMER CLASS IS'T FINISHED YET, FIRST I HAVE TO FIGURE OUT HOW TO 
+//TIMER CLASS IS'T FINISHED YET, FIRST I HAVE TO FIGURE OUT HOW TO
 //PASS INPUT FROM TIMEBOX FORM TO TARGET TIMER
 //I HAVE ONE FORM FOR ALL INPUTS
 
@@ -13,19 +12,16 @@ const timeBoxCloseBtn = document.querySelector('.btn-close-box') as HTMLButtonEl
 //BY CLICKING SETUP/REST BUTTON
 //this.element.reset (parents)
 
-
-
-timeBoxForm.addEventListener('submit', (event: Event) => {
+timeBoxForm.addEventListener('submit', (event: SubmitEvent) => {
     event.preventDefault();
     const input = Number(timeBoxValue.value);
-    console.log('INPUT', input)
-    timeBoxValue.value = '';
-  
+    console.log('INPUT', input);
+    const form = event.target as HTMLFormElement;
+    Task.updateRemainingTime((form[0] as HTMLInputElement).value, (form[1] as HTMLInputElement).value, +(form[2] as HTMLInputElement).value);
+    (form[2] as HTMLInputElement).value = '';
 });
 
-
 export class Timer {
-
     private element: {
         minutes: HTMLElement;
         seconds: HTMLElement;
@@ -39,7 +35,7 @@ export class Timer {
     taskId: string;
     task: Task | undefined;
 
-    constructor(container: HTMLElement, task: Task, parentCategoryId: string, taskId : string) {
+    constructor(container: HTMLElement, task: Task, parentCategoryId: string, taskId: string) {
         container.innerHTML = Timer.getHTML();
 
         this.element = {
@@ -48,7 +44,7 @@ export class Timer {
             control: container.querySelector('.timer__btn--control')!,
             reset: container.querySelector('.timer__btn--reset')!,
         };
-        this.parentCategoryId = parentCategoryId
+        this.parentCategoryId = parentCategoryId;
         this.taskId = taskId;
         this.interval = 0;
         this.remainingSeconds = task.remainingTime;
@@ -58,28 +54,24 @@ export class Timer {
     }
 
     private setupListeners() {
-        
         this.element.reset.addEventListener('click', () => {
-
             notificationTimeBox.style.display = 'flex';
+            (document.getElementById('category-id') as HTMLInputElement).value = this.parentCategoryId;
+            (document.getElementById('task-id') as HTMLInputElement).value = this.taskId;
         });
-               
 
         timeBoxCloseBtn.addEventListener('click', () => {
             notificationTimeBox.style.display = 'none';
+            timeBoxForm.reset();
         });
-
-       
     }
-
 
     updateInterfaceTime() {
         const minutes = Math.floor(this.remainingSeconds / 60);
         const seconds = this.remainingSeconds % 60;
-    
+
         this.element.minutes.textContent = minutes.toString().padStart(2, '0');
         this.element.seconds.textContent = seconds.toString().padStart(2, '0');
-
     }
 
     static getHTML(): string {
@@ -103,5 +95,4 @@ export class Timer {
         </button>
         `;
     }
-
 }

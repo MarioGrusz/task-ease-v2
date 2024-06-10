@@ -56,19 +56,20 @@ export class Category {
     Storage.setStorage(categoryArray);
   }
 
-  static addTasks(categoryIdToFind: string, task: Task): void {
-    if (!this.validateId(categoryIdToFind)) throw new Error("Invalid ID type");
-    const category = this.findCategoryById(categoryIdToFind);
+  addTasks(categoryIdToFind: string, task: Task): void {
+    if (!Category.validateId(categoryIdToFind))
+      throw new Error("Invalid ID type");
+    const category = Category.findCategoryById(categoryIdToFind);
     if (!category) {
       console.error(`Category with ID ${categoryIdToFind} not found.`);
       return;
     }
     if (!category.tasks) category.tasks = [];
     category.tasks.push(task);
-    this.updateCategory(category);
+    Category.updateCategory(category);
   }
 
-  public getCompletionRatio(): void {
+  getCompletionRatio(): void {
     const total = this.tasks?.length;
     const completed = this.tasks?.filter((task) => task.completed).length;
     if (total && completed)

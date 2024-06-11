@@ -189,7 +189,8 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
         }
 
         item.addTasks(currentCategoryId, task);
-        renderTask(tasksWrapper, item);
+        const category = Category.findCategoryById(currentCategoryId);
+        if (category) renderTask(tasksWrapper, category);
         inputField.value = "";
       });
     });

@@ -44,8 +44,6 @@ form.addEventListener("submit", (event: Event) => {
   const categories = Storage.getStorage();
   if (categoriesContainer) renderCategory(categoriesContainer, categories);
   (event.target as HTMLFormElement).reset();
-
-  console.log("category", categories);
 });
 
 window.addEventListener("DOMContentLoaded", () => {

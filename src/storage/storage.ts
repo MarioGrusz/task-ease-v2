@@ -1,24 +1,26 @@
 import { Category } from "../category/category";
 
 export class Storage {
-  private static readonly STORAGE_KEY = 'todo';
-
-  static setStorage(categoryArray: Category[]): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(categoryArray));
-  }
-
   static getStorage(): Category[] {
-    const todoString = localStorage.getItem(this.STORAGE_KEY);
-    if (todoString) {
-      try {
-        return JSON.parse(todoString);
-      } catch (error) {
-        console.error('Error parsing data from storage:', error);
-        return [];
-      }
+    const data = localStorage.getItem("categories");
+    if (data) {
+      return JSON.parse(data, (key, value) => {
+        if (key === "" && Array.isArray(value)) {
+          return value.map(Category.fromPlainObject);
+        }
+        return value;
+      });
     }
     return [];
   }
 
+  static setStorage(categories: Category[]): void {
+    localStorage.setItem("categories", JSON.stringify(categories));
+  }
 }
-  
+
+/* 
+      Serialization/Deserialization: When objects are retrieved from storage, 
+      they are often deserialized into plain objects, not instances of 
+      the original class.
+*/

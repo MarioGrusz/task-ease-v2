@@ -7,8 +7,13 @@ export class Category {
   tasks: Task[] = [];
   taskRatio?: number[] = [];
 
-  constructor(name: string, tasks: Task[] = [], taskRatio: number[] = []) {
-    this.id = this.generateUniqueId();
+  constructor(
+    name: string,
+    tasks: Task[] = [],
+    taskRatio: number[] = [],
+    id?: string
+  ) {
+    this.id = id || this.generateUniqueId();
     this.name = name;
     this.tasks = tasks;
     this.taskRatio = taskRatio;
@@ -57,6 +62,7 @@ export class Category {
   }
 
   addTasks(categoryIdToFind: string, task: Task): void {
+    console.log("add tasks");
     if (!Category.validateId(categoryIdToFind))
       throw new Error("Invalid ID type");
     const category = Category.findCategoryById(categoryIdToFind);
@@ -75,12 +81,8 @@ export class Category {
     if (total && completed)
       this.taskRatio?.push(total === 0 ? 0 : completed / total);
   }
+
+  static fromPlainObject(obj: any): Category {
+    return new Category(obj.name, obj.tasks, obj.taskRatio, obj.id);
+  }
 }
-
-/*
-    the following methods should remain or be converted to instance methods:
-
-    generateUniqueId (already an instance method)
-    addTasks
-    getCompletionRatio
-*/

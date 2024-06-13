@@ -62,7 +62,6 @@ export class Category {
   }
 
   addTasks(categoryIdToFind: string, task: Task): void {
-    console.log("add tasks");
     if (!Category.validateId(categoryIdToFind))
       throw new Error("Invalid ID type");
     const category = Category.findCategoryById(categoryIdToFind);

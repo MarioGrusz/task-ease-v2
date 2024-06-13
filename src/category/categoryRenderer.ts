@@ -145,13 +145,7 @@ export const renderCategory = (container: HTMLElement, array: Category[]) => {
       progressBar.style.display = categoryItem.classList.contains("active")
         ? "block"
         : "none";
-      //categoryItem.classList.contains('active') ? showProgressBar() : undefined;
     }
-
-    //SAVE FULLSCREEN OPTION ON REFRESH
-    // if (category.id === selectedCategoryId) {
-    //     //openElment();
-    // };
 
     openButton.addEventListener("click", () => {
       toggleAccordion();

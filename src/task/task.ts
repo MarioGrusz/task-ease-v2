@@ -69,6 +69,7 @@ export class Task {
       if (taskIndex !== -1) {
         category.tasks[taskIndex].remainingTime = newTime;
         Storage.setStorage(categoryArray);
+
         const taskItemEl = document
           .getElementById(taskId)
           ?.closest(".task-item");
@@ -98,12 +99,28 @@ export class Task {
     }
   }
 
-  // static getRemainingTime(
-  //   categoryId: string,
-  //   taskId: string
-  // ): number | undefined {
-  //   const task = this.findTaskById(categoryId, taskId);
-  //   if (task) console.log("UPDATED_TIME", task.remainingTime);
-  //   if (task) return task.remainingTime;
-  // }
+  static getRemainingTime(
+    categoryId: string,
+    taskId: string
+  ): number | undefined {
+    const task = this.findTaskById(categoryId, taskId);
+    if (task) return task.remainingTime;
+  }
+
+  static updateCheckBoxUi(taskId: string, newValue: boolean) {
+    const taskElement = document.getElementById(taskId);
+    if (!taskElement) {
+      console.error(`Task element with ID ${taskId} not found.`);
+      return;
+    }
+    const checkboxItemEl = taskElement.closest(
+      "input"
+    ) as HTMLInputElement | null;
+    if (checkboxItemEl) {
+      checkboxItemEl.checked = newValue;
+      console.log(`Task ${taskId} is marked as completed.`);
+    } else {
+      console.error(`Checkbox input for task ${taskId} not found.`);
+    }
+  }
 }

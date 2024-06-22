@@ -6,7 +6,7 @@ import {
 import { Category } from "./category/category";
 import { Storage } from "./storage/storage";
 // import { renderCategory } from "./category/categoryRenderer";
-import { renderCategory } from "./category/catRenderSecond";
+import { renderCategory } from "./category/categoryRenderer";
 import { validateCategory } from "./category/category.zod";
 
 // ****** SELECT ITEMS **********
@@ -53,7 +53,7 @@ form.addEventListener("submit", (event: Event) => {
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  //if (categories.length !== 0) leaveWelcomePage();
+  if (categories.length !== 0) leaveWelcomePage();
   updateCategoryCounter(categories);
   if (categoriesContainer) renderCategory(categoriesContainer, categories);
   getCurrentDate();

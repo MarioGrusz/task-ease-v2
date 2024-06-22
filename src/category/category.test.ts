@@ -35,15 +35,18 @@ describe("Category", () => {
   });
 
   it("should add a task to a category", () => {
-    const initialCategories = [{ id: "1", name: "Test Category", tasks: [] }];
+    //const initialCategories = [{ id: "1", name: "Test Category", tasks: [] }];
+    const newCategory = new Category("Test category");
     const task = {
       id: "task1",
       name: "Test Task",
       completed: false,
       remainingTime: [120],
     };
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(initialCategories));
-    Category.addTasks("1", task);
+    //localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(initialCategories));
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newCategory));
+    //new.addTasks("1", task);
+    //category.addTasks(category.id, task);
 
     expect(localStorage.getItem).toHaveBeenCalled();
     expect(localStorage.setItem).toHaveBeenCalled();

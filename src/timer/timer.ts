@@ -9,15 +9,25 @@ const timeBoxCloseBtn = document.querySelector(
 
 timeBoxForm.addEventListener("submit", (event: SubmitEvent) => {
   event.preventDefault();
-  const form = event.target as HTMLFormElement;
 
-  Task.updateRemainingTime(
-    (form[0] as HTMLInputElement).value,
-    (form[1] as HTMLInputElement).value,
-    +(form[2] as HTMLInputElement).value
-  );
-  console.log("INPUT", (form[2] as HTMLInputElement).value); //remove
-  (form[2] as HTMLInputElement).value = "";
+  const form = event.target as HTMLFormElement;
+  const categoryId = (form[0] as HTMLInputElement).value;
+  const taskId = (form[1] as HTMLInputElement).value;
+  let remainingSecondsInput = form[2] as HTMLInputElement;
+
+  const remainingSeconds = Number(remainingSecondsInput.value);
+
+  if (isNaN(remainingSeconds)) {
+    console.error("The remaining seconds value must be a number.");
+    alert("Please enter a valid number for remaining seconds.");
+    return;
+  }
+
+  Task.updateRemainingTime(categoryId, taskId, remainingSeconds);
+  remainingSecondsInput.value = "";
+  Task.toggleCompleted(categoryId, taskId, false);
+  Task.updateCheckBoxUi((form[1] as HTMLInputElement).value, false);
+  notificationTimeBox.style.display = "none";
 });
 
 export class Timer {
@@ -29,7 +39,7 @@ export class Timer {
   };
 
   interval: ReturnType<typeof setInterval> | number;
-  remainingSeconds: number; // fix it later
+  remainingSeconds: number;
   parentCategoryId: string;
   taskId: string;
   task: Task | undefined;
@@ -57,7 +67,7 @@ export class Timer {
     this.updateInterfaceTime();
   }
 
-  private setupListeners() {
+  private setupListeners(): void {
     this.element.setup_reset_btn.addEventListener("click", () => {
       notificationTimeBox.style.display = "flex";
       (document.getElementById("category-id") as HTMLInputElement).value =
@@ -67,12 +77,10 @@ export class Timer {
     });
 
     timeBoxCloseBtn.addEventListener("click", () => {
-      notificationTimeBox.style.display = "none";
-      timeBoxForm.reset();
+      Timer.closeInputForm();
     });
 
     this.element.start_stop_btn.addEventListener("click", () => {
-      console.log("START", this.remainingSeconds);
       if (this.interval === 0) {
         this.start();
       } else {
@@ -81,7 +89,12 @@ export class Timer {
     });
   }
 
-  updateInterfaceTime() {
+  static closeInputForm = () => {
+    notificationTimeBox.style.display = "none";
+    timeBoxForm.reset();
+  };
+
+  updateInterfaceTime(): void {
     const minutes = Math.floor(this.remainingSeconds / 60);
     const seconds = this.remainingSeconds % 60;
 
@@ -89,7 +102,9 @@ export class Timer {
     this.element.seconds.textContent = seconds.toString().padStart(2, "0");
   }
 
-  start() {
+  start(): void {
+    const newTime = Task.getRemainingTime(this.parentCategoryId, this.taskId);
+    if (newTime) this.remainingSeconds = newTime;
     if (this.remainingSeconds === 0) return;
 
     this.interval = setInterval(() => {
@@ -106,7 +121,14 @@ export class Timer {
     }, 1000);
   }
 
-  stop() {
+  stop(): void {
+    Task.updateRemainingTime(
+      this.parentCategoryId,
+      this.taskId,
+      this.remainingSeconds
+    );
+    Task.toggleCompleted(this.parentCategoryId, this.taskId, true);
+    Task.updateCheckBoxUi(this.taskId, true);
     clearInterval(this.interval);
     this.interval = 0;
   }

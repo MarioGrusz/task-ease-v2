@@ -2,6 +2,8 @@ import { Category } from "../category/category";
 import { Task } from "./task";
 import { Timer } from "../timer/timer";
 
+export const timerInstances: Map<string, Timer> = new Map();
+
 export const renderTask = (container: HTMLElement, category: Category) => {
   container.innerHTML = "";
 

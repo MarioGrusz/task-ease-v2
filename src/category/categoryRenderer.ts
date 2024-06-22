@@ -79,7 +79,6 @@ const createProgressBar = (category: Category): HTMLElement => {
 
   const categoryForProgressBar = Category.findCategoryById(category.id);
   taskRatio = categoryForProgressBar?.taskRatio!;
-  console.log("ProgressBar first render", taskRatio);
 
   new ProgressBar(taskRatio, progressBarValue, progressBarFill);
 

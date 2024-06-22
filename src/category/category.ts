@@ -1,6 +1,6 @@
 import { Task } from "../task/task";
 import { Storage } from "../storage/storage";
-import { categoriesProgressBars } from "./catRenderSecond";
+import { categoriesProgressBars } from "./categoryRenderer";
 import { ProgressBar } from "../progressBar/progressBar";
 
 export class Category {

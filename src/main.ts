@@ -1,4 +1,8 @@
-import { leaveWelcomePage, getCurrentDate } from "./utils/utils";
+import {
+  leaveWelcomePage,
+  getCurrentDate,
+  updateCategoryCounter,
+} from "./utils/utils";
 import { Category } from "./category/category";
 import { Storage } from "./storage/storage";
 // import { renderCategory } from "./category/categoryRenderer";
@@ -42,13 +46,15 @@ form.addEventListener("submit", (event: Event) => {
   }
 
   Category.addCategory(category);
-  const categories = Storage.getStorage();
+  categories = Storage.getStorage();
+  updateCategoryCounter(categories);
   if (categoriesContainer) renderCategory(categoriesContainer, categories);
   (event.target as HTMLFormElement).reset();
 });
 
 window.addEventListener("DOMContentLoaded", () => {
   //if (categories.length !== 0) leaveWelcomePage();
+  updateCategoryCounter(categories);
   if (categoriesContainer) renderCategory(categoriesContainer, categories);
   getCurrentDate();
   console.log("category", categories);

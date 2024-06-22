@@ -4,6 +4,10 @@ import { updateCategoryCounter } from "../utils/utils";
 import { renderTask } from "../task/taskRenderer";
 import { Task } from "../task/task";
 import { validateTask } from "../task/task.zod";
+import { ProgressBar } from "../progressBar/progressBar";
+
+let taskRatio: number = 0;
+export const categoriesProgressBars = new Map();
 
 export const renderCategory = (
   container: HTMLElement,
@@ -37,64 +41,65 @@ const createCategoryItem = (category: Category): HTMLElement => {
   const btnContainer = createButtonContainer(category, categoryItem);
   categoryItem.appendChild(btnContainer);
 
-  //COUNTER AND PROGRESS BAR GO HERE
+  const tasksCounter = createTasksCounter();
+  categoryItem.appendChild(tasksCounter);
+
+  const progressBar = createProgressBar(category);
+  categoryItem.appendChild(progressBar);
+
+  categoriesProgressBars.set(category.id, {
+    progressBarValue: progressBar.querySelector(".progress-bar-value"),
+    progressBarFill: progressBar.querySelector(".progress-bar-fill"),
+  });
 
   const taskElementsContainer = createTaskElementsContainer(category);
-
   categoryItem.appendChild(taskElementsContainer);
-
-  //const taskForms = document.querySelectorAll(".new-task-form");
-
-  //   taskForms.forEach((form) => {
-  //     const inputField = form.querySelector(".task-input") as HTMLInputElement;
-
-  //     form.addEventListener("submit", (event: Event) => {
-  //       event.preventDefault();
-  //       const currentTarget = event.currentTarget as HTMLElement;
-  //       const parentNode = currentTarget.parentNode?.parentElement;
-  //       const inputValue = inputField?.value;
-  //       let currentCategoryId: string = "";
-  //       if (parentNode) {
-  //         currentCategoryId = parentNode.id;
-  //       }
-  //       if (inputValue == null || inputValue.trim() === "") return;
-  //       const taskName = inputValue;
-
-  //       const task: Task = {
-  //         parentCategoryId: categoryItem.id,
-  //         id: crypto.randomUUID(),
-  //         name: taskName,
-  //         completed: false,
-  //         remainingTime: 0,
-  //       };
-
-  //       const validationResult = validateTask(task);
-  //       if (!validationResult.success) {
-  //         console.error(validationResult.error);
-  //         return;
-  //       }
-
-  //       category.addTasks(currentCategoryId, task);
-  //       const category = Category.findCategoryById(currentCategoryId);
-  //       if (category) renderTask(tasksWrapper, category);
-  //       inputField.value = "";
-  //     });
-  //   });
-
-  //   renderTask(tasksWrapper, category);
 
   return categoryWrapper;
 };
 
+const createTasksCounter = (): HTMLElement => {
+  const tasksCounter = document.createElement("p");
+  tasksCounter.classList.add("tasks-counter");
+  tasksCounter.innerHTML = "Click Open and add task/s";
+  return tasksCounter;
+};
+
+const createProgressBar = (category: Category): HTMLElement => {
+  const progressBar = document.createElement("div");
+  progressBar.classList.add("progress-bar");
+
+  const progressBarValue = document.createElement("div");
+  progressBarValue.classList.add("progress-bar-value");
+  progressBar.appendChild(progressBarValue);
+
+  const progressBarFill = document.createElement("div");
+  progressBarFill.classList.add("progress-bar-fill");
+  progressBar.appendChild(progressBarFill);
+
+  const categoryForProgressBar = Category.findCategoryById(category.id);
+  taskRatio = categoryForProgressBar?.taskRatio!;
+  console.log("ProgressBar first render", taskRatio);
+
+  new ProgressBar(taskRatio, progressBarValue, progressBarFill);
+
+  return progressBar;
+};
+
+const updateProgressBarUI = (category: Category, taskRatio: number) => {
+  const progressBarElements = categoriesProgressBars.get(category.id);
+  if (progressBarElements) {
+    const { progressBarValue, progressBarFill } = progressBarElements;
+    const progressBarInstance = new ProgressBar(
+      taskRatio,
+      progressBarValue,
+      progressBarFill
+    );
+    progressBarInstance.update();
+  }
+};
+
 const createTaskElementsContainer = (category: Category): HTMLElement => {
-  // const tasksWrapper = document.createElement("div");
-  // tasksWrapper.classList.add("tasks-wrapper");
-  // taskElementsContainer.appendChild(tasksWrapper);
-
-  // categoryItem.appendChild(taskElementsContainer);
-
-  // container.appendChild(categoryWrapper);
-
   const taskElementsContainer = document.createElement("div");
   taskElementsContainer.classList.add("task-elements-container");
 
@@ -108,7 +113,6 @@ const createTaskElementsContainer = (category: Category): HTMLElement => {
 
   const tasksWrapper = document.createElement("div");
   tasksWrapper.classList.add("tasks-wrapper");
-  taskElementsContainer.appendChild(tasksWrapper);
 
   form.addEventListener("submit", (event: Event) => {
     event.preventDefault();
@@ -119,11 +123,15 @@ const createTaskElementsContainer = (category: Category): HTMLElement => {
       return;
     }
     let inputValue = (inputElement as HTMLInputElement)?.value ?? "";
-    addTask(inputValue, category, taskElementsContainer);
-    inputValue = "";
+    addTask(inputValue, category, tasksWrapper);
+    (inputElement as HTMLInputElement).value = "";
   });
 
   taskElementsContainer.appendChild(form);
+  taskElementsContainer.appendChild(tasksWrapper);
+
+  const categoryToRender = Category.findCategoryById(category.id);
+  if (categoryToRender) renderTask(tasksWrapper, categoryToRender);
 
   return taskElementsContainer;
 };
@@ -131,7 +139,7 @@ const createTaskElementsContainer = (category: Category): HTMLElement => {
 const addTask = (
   inputValue: string,
   category: Category,
-  taskContainer: HTMLElement
+  tasksWrapper: HTMLElement
 ) => {
   const task: Task = {
     parentCategoryId: category.id,
@@ -145,11 +153,13 @@ const addTask = (
     console.error(validationResult.error);
     return;
   }
-  console.log(task);
   category.addTasks(category.id, task);
-  const updatedCategories = Storage.getStorage();
-  updateCategoryCounter(updatedCategories);
-  renderTask(taskContainer, category);
+  const categoryToRender = Category.findCategoryById(category.id);
+  taskRatio = categoryToRender?.taskRatio!;
+  if (categoryToRender) {
+    renderTask(tasksWrapper, categoryToRender);
+    updateProgressBarUI(categoryToRender, taskRatio);
+  }
 };
 
 const createButtonContainer = (
@@ -232,9 +242,9 @@ const toggleAccordion = (categoryItem: HTMLElement) => {
   const openButton = categoryItem.querySelector(
     ".button-open"
   ) as HTMLButtonElement;
-  //   const progressBar = categoryItem.querySelector(
-  //     ".progress-bar"
-  //   ) as HTMLElement;
+  const progressBar = categoryItem.querySelector(
+    ".progress-bar"
+  ) as HTMLElement;
 
   taskElementsContainer.style.display = categoryItem.classList.contains(
     "active"
@@ -244,7 +254,7 @@ const toggleAccordion = (categoryItem: HTMLElement) => {
   openButton.innerText = categoryItem.classList.contains("active")
     ? "CLOSE"
     : "OPEN";
-  //   progressBar.style.display = categoryItem.classList.contains("active")
-  //     ? "block"
-  //     : "none";
+  progressBar.style.display = categoryItem.classList.contains("active")
+    ? "block"
+    : "none";
 };

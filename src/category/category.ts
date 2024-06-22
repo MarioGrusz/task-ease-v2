@@ -1,16 +1,18 @@
 import { Task } from "../task/task";
 import { Storage } from "../storage/storage";
+import { categoriesProgressBars } from "./catRenderSecond";
+import { ProgressBar } from "../progressBar/progressBar";
 
 export class Category {
   id: string;
   name: string;
   tasks: Task[] = [];
-  taskRatio?: number[] = [];
+  taskRatio?: number = 0;
 
   constructor(
     name: string,
     tasks: Task[] = [],
-    taskRatio: number[] = [],
+    taskRatio: number = 0,
     id?: string
   ) {
     this.id = id || this.generateUniqueId();
@@ -61,24 +63,43 @@ export class Category {
     Storage.setStorage(categoryArray);
   }
 
-  addTasks(categoryIdToFind: string, task: Task): void {
-    if (!Category.validateId(categoryIdToFind))
-      throw new Error("Invalid ID type");
-    const category = Category.findCategoryById(categoryIdToFind);
+  addTasks(categoryToFindId: string, task: Task): void {
+    const category = Category.findCategoryById(categoryToFindId);
     if (!category) {
-      console.error(`Category with ID ${categoryIdToFind} not found.`);
+      console.error(`Category with ID ${categoryToFindId} not found.`);
       return;
     }
     if (!category.tasks) category.tasks = [];
     category.tasks.push(task);
     Category.updateCategory(category);
+    category.getCompletionRatio(categoryToFindId);
   }
 
-  getCompletionRatio(): void {
-    const total = this.tasks?.length;
-    const completed = this.tasks?.filter((task) => task.completed).length;
-    if (total && completed)
-      this.taskRatio?.push(total === 0 ? 0 : completed / total);
+  getCompletionRatio(categoryToFindId: string): void {
+    const category = Category.findCategoryById(categoryToFindId);
+    if (!category) {
+      console.error(`Category with ID ${categoryToFindId} not found.`);
+      return;
+    }
+    const total = category.tasks?.length || 0;
+    const completed =
+      category.tasks?.filter((task) => task.completed).length || 0;
+
+    category.taskRatio =
+      total === 0 ? 0 : Math.floor(100 * (completed / total));
+
+    Category.updateCategory(category);
+
+    const progressBarElements = categoriesProgressBars.get(category.id);
+    if (progressBarElements) {
+      const { progressBarValue, progressBarFill } = progressBarElements;
+      const progressBarInstance = new ProgressBar(
+        category.taskRatio,
+        progressBarValue,
+        progressBarFill
+      );
+      progressBarInstance.update();
+    }
   }
 
   static fromPlainObject(obj: any): Category {

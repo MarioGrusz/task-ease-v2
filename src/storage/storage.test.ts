@@ -18,7 +18,7 @@ describe("Storage", () => {
             parentCategoryId: "",
           },
         ],
-        [50]
+        50
       ),
     ];
     Storage.setStorage(categoryArray);

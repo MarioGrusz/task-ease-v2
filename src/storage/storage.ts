@@ -20,7 +20,7 @@ export class Storage {
 }
 
 /* 
-      Serialization/Deserialization: When objects are retrieved from storage, 
-      they are often deserialized into plain objects, not instances of 
-      the original class.
+  Serialization/Deserialization: When objects are retrieved from storage, 
+  they are often deserialized into plain objects, not instances of 
+  the original class.
 */

@@ -72,13 +72,13 @@ export class Category {
     if (!category.tasks) category.tasks = [];
     category.tasks.push(task);
     Category.updateCategory(category);
-    category.getCompletionRatio(categoryToFindId);
+    category.getCompletionRatio();
   }
 
-  getCompletionRatio(categoryToFindId: string): void {
-    const category = Category.findCategoryById(categoryToFindId);
+  getCompletionRatio(): void {
+    const category = Category.findCategoryById(this.id);
     if (!category) {
-      console.error(`Category with ID ${categoryToFindId} not found.`);
+      console.error(`Category with ID ${this.id} not found.`);
       return;
     }
     const total = category.tasks?.length || 0;
@@ -89,6 +89,7 @@ export class Category {
       total === 0 ? 0 : Math.floor(100 * (completed / total));
 
     Category.updateCategory(category);
+    console.log(category);
 
     const progressBarElements = categoriesProgressBars.get(category.id);
     if (progressBarElements) {

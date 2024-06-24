@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     globals: true,
     setupFiles: ["vitest-localstorage-mock"],
+    environment: "jsdom",
   },
   css: {
     preprocessorOptions: {

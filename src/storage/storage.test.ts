@@ -1,8 +1,7 @@
 import { it, expect, describe } from "vitest";
 import { Storage } from "./storage";
 import { Category } from "../category/category";
-
-const LOCAL_STORAGE_KEY = "categories";
+import { LOCAL_STORAGE_KEY } from "../utils/utils";
 
 describe("Storage", () => {
   it("should set items in storage", () => {

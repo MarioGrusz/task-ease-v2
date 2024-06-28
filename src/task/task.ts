@@ -1,26 +1,29 @@
 import { Storage } from "../storage/storage";
+import { generateUniqueId, validateId } from "../utils/utils";
 
 export class Task {
-  parentCategoryId: string;
-  id: string;
   name: string;
-  remainingTime: number;
-  completed: boolean;
+  parentCategoryId: string = "";
+  id?: string;
+  remainingTime: number = 0;
+  completed: boolean = false;
 
   constructor(
-    parentCategoryId: string = "",
     name: string,
-    remainingTime: number,
-    completed = false
+    parentCategoryId?: string,
+    remainingTime?: number,
+    completed?: boolean
   ) {
-    this.parentCategoryId = parentCategoryId;
-    this.id = crypto.randomUUID();
     this.name = name;
-    this.remainingTime = remainingTime;
-    this.completed = completed;
+    this.parentCategoryId = parentCategoryId || "";
+    this.id = generateUniqueId();
+    this.remainingTime = remainingTime || 0;
+    this.completed = completed || false;
   }
 
   static findTaskById(categoryId: string, taskId: string) {
+    if (!validateId(categoryId)) throw new Error("Invalid ID type");
+    if (!validateId(taskId)) throw new Error("Invalid ID type");
     const categoryArray = Storage.getStorage();
     const category = categoryArray.find(
       (category) => category.id === categoryId
@@ -33,6 +36,8 @@ export class Task {
     taskId: string,
     newCompletedStatus: boolean
   ) {
+    if (!validateId(categoryId)) throw new Error("Invalid ID type");
+    if (!validateId(taskId)) throw new Error("Invalid ID type");
     let categoryArray = Storage.getStorage();
     const category = categoryArray.find(
       (category) => category.id === categoryId
@@ -43,7 +48,7 @@ export class Task {
       if (taskIndex !== -1) {
         category.tasks[taskIndex].completed = newCompletedStatus;
         Storage.setStorage(categoryArray);
-        category.getCompletionRatio(category.id);
+        category.calculateCompletionRatio();
       } else {
         console.error(
           `Task with ID ${taskId} not found in category ${categoryId}`
@@ -59,6 +64,8 @@ export class Task {
     taskId: string,
     newTime: number
   ) {
+    if (!validateId(categoryId)) throw new Error("Invalid ID type");
+    if (!validateId(taskId)) throw new Error("Invalid ID type");
     let categoryArray = Storage.getStorage();
     const category = categoryArray.find(
       (category) => category.id === categoryId
@@ -103,6 +110,8 @@ export class Task {
     categoryId: string,
     taskId: string
   ): number | undefined {
+    if (!validateId(categoryId)) throw new Error("Invalid ID type");
+    if (!validateId(taskId)) throw new Error("Invalid ID type");
     const task = this.findTaskById(categoryId, taskId);
     if (task) return task.remainingTime;
   }

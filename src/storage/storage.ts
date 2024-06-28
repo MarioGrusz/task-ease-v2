@@ -1,8 +1,9 @@
 import { Category } from "../category/category";
+import { LOCAL_STORAGE_KEY } from "../utils/utils";
 
 export class Storage {
   static getStorage(): Category[] {
-    const data = localStorage.getItem("categories");
+    const data = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (data) {
       return JSON.parse(data, (key, value) => {
         if (key === "" && Array.isArray(value)) {

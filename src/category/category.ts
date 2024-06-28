@@ -2,6 +2,7 @@ import { Task } from "../task/task";
 import { Storage } from "../storage/storage";
 import { categoriesProgressBars } from "./categoryRenderer";
 import { ProgressBar } from "../progressBar/progressBar";
+import { validateId, generateUniqueId } from "../utils/utils";
 
 export class Category {
   id: string;
@@ -15,22 +16,10 @@ export class Category {
     taskRatio: number = 0,
     id?: string
   ) {
-    this.id = id || this.generateUniqueId();
+    this.id = id || generateUniqueId();
     this.name = name;
     this.tasks = tasks;
     this.taskRatio = taskRatio;
-  }
-
-  private generateUniqueId(): string {
-    try {
-      return crypto.randomUUID();
-    } catch (error) {
-      return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    }
-  }
-
-  private static validateId(id: unknown): id is number | string {
-    return typeof id === "number" || typeof id === "string";
   }
 
   static addCategory(newCategory: Category): void {
@@ -40,7 +29,7 @@ export class Category {
   }
 
   static removeCategory(toRemoveId: number | string): void {
-    if (!this.validateId(toRemoveId)) throw new Error("Invalid ID type");
+    if (!validateId(toRemoveId)) throw new Error("Invalid ID type");
     let categories = Storage.getStorage();
     const updatedCategories = categories.filter(
       (category) => category.id !== toRemoveId
@@ -49,7 +38,7 @@ export class Category {
   }
 
   static findCategoryById(categoryId: string) {
-    if (!this.validateId(categoryId)) throw new Error("Invalid ID type");
+    if (!validateId(categoryId)) throw new Error("Invalid ID type");
     const categoryArray = Storage.getStorage();
     return categoryArray.find((category) => category.id === categoryId);
   }
@@ -72,10 +61,10 @@ export class Category {
     if (!category.tasks) category.tasks = [];
     category.tasks.push(task);
     Category.updateCategory(category);
-    category.getCompletionRatio();
+    category.calculateCompletionRatio();
   }
 
-  getCompletionRatio(): void {
+  calculateCompletionRatio(): void {
     const category = Category.findCategoryById(this.id);
     if (!category) {
       console.error(`Category with ID ${this.id} not found.`);
@@ -89,7 +78,6 @@ export class Category {
       total === 0 ? 0 : Math.floor(100 * (completed / total));
 
     Category.updateCategory(category);
-    console.log(category);
 
     const progressBarElements = categoriesProgressBars.get(category.id);
     if (progressBarElements) {

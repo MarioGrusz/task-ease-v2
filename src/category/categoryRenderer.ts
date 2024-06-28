@@ -140,13 +140,8 @@ const addTask = (
   category: Category,
   tasksWrapper: HTMLElement
 ) => {
-  const task: Task = {
-    parentCategoryId: category.id,
-    id: crypto.randomUUID(),
-    name: inputValue,
-    completed: false,
-    remainingTime: 0,
-  };
+  const task = new Task(inputValue, category.id);
+
   const validationResult = validateTask(task);
   if (!validationResult.success) {
     console.error(validationResult.error);

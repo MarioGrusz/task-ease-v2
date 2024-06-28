@@ -60,30 +60,3 @@ window.addEventListener("DOMContentLoaded", () => {
   getCurrentDate();
   console.log("category", categories);
 });
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const openModalBtn = document.querySelector(
-//     ".round-plus"
-//   ) as HTMLInputElement;
-//   const closeModalBtn = document.querySelector(".fa-circle-xmark");
-//   const modalOpenCheckbox = document.getElementById("modal-open");
-
-//   // Function to open the modal
-//   const openModal = () => {
-//     modalOpenCheckbox.checked = true;
-//   };
-
-// // Function to close the modal
-// const closeModal = () => {
-//   modalOpenCheckbox.checked = false;
-// };
-
-// // Add event listeners
-// openModalBtn.addEventListener("click", openModal);
-// closeModalBtn.addEventListener("click", closeModal);
-
-// // Close modal when clicking outside of it
-// document
-//   .querySelector(".modal-label.overlay")
-//   .addEventListener("click", closeModal);
-//});

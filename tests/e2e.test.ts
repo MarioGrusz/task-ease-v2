@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("adds category", async ({ page }) => {
+test("adds category UI", async ({ page }) => {
   await page.goto("http://localhost:5173/");
 
   const button = await page.locator(".welcome-page__btn");

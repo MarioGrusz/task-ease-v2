@@ -18,7 +18,7 @@ export const renderTask = (container: HTMLElement, category: Category) => {
     const checkboxElement = document.createElement("input");
     checkboxElement.classList.add("completed-checkbox");
     checkboxElement.type = "checkbox";
-    checkboxElement.id = task.id;
+    checkboxElement.id = task.id || "";
     checkboxElement.checked = task.completed ?? false;
     taskFirst.appendChild(checkboxElement);
 
@@ -32,7 +32,7 @@ export const renderTask = (container: HTMLElement, category: Category) => {
     taskFirst.appendChild(timerContainer);
 
     container.appendChild(taskElement);
-    new Timer(timerContainer, task, task.parentCategoryId, task.id);
+    new Timer(timerContainer, task, task.parentCategoryId, task.id as string);
 
     checkboxElement.addEventListener("click", (event: Event) => {
       const target = event.target as HTMLInputElement;
@@ -42,7 +42,7 @@ export const renderTask = (container: HTMLElement, category: Category) => {
         const parentNode =
           currentTarget.parentNode?.parentElement?.parentElement?.parentElement
             ?.parentElement;
-        const searchedCategoryId = parentNode?.id;
+        const searchedCategoryId = parentNode?.id || "";
         const searchedTaskId = currentTarget.id;
         if (searchedCategoryId && searchedTaskId) {
           Task.toggleCompleted(

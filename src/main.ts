@@ -58,5 +58,4 @@ window.addEventListener("DOMContentLoaded", () => {
   updateCategoryCounter(categories);
   if (categoriesContainer) renderCategory(categoriesContainer, categories);
   getCurrentDate();
-  console.log("category", categories);
 });

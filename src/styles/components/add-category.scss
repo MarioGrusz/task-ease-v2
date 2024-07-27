@@ -1,10 +1,11 @@
-@use "../util" as *;
+@use "../utils" as *;
 
 .items-container {
   z-index: 90;
   width: 100%;
   min-height: 100vh;
   overflow: scroll;
+  overflow-x: hidden;
 
   padding: 2rem;
   display: flex;
@@ -18,11 +19,16 @@
 
   position: relative;
 
-  @include breakpoint-up(medium) {
-    margin-inline: auto;
-    max-width: 375px;
-    border-radius: 24px;
-    position: relative;
+  @include respond-to("small") {
+    padding: 2rem 8rem;
+  }
+
+  @include respond-to("large") {
+    padding: 2rem 12rem;
+  }
+
+  @include respond-to("extra-large") {
+    padding: 4rem 20rem;
   }
 
   &__greetings,
@@ -33,11 +39,18 @@
   &__title input {
     margin-left: 0.5rem;
     flex: 1 1 0%;
-    min-width: 0;
+    min-width: 15rem;
     appearance: none;
     border: none;
     outline: none;
     background: none;
+    width: 100%;
+  }
+
+  &__title {
+    @include respond-to("medium") {
+      margin-left: 2rem;
+    }
   }
 
   &__title,
@@ -52,7 +65,7 @@
     display: flex;
     justify-content: space-between;
     border-radius: 30px;
-    padding: 0 0.5rem;
+    padding: 0.5rem;
 
     .text-wrapper {
       display: flex;
@@ -60,15 +73,21 @@
       justify-content: center;
       align-items: center;
       padding-left: 1rem;
+      flex: 1;
 
       p {
-        font-size: 1rem;
+        font-size: 1vw;
       }
     }
 
     .image-wrapper {
-      height: 15vh;
+      // height: 15vh;
       width: 100%;
+      flex: 1;
+
+      img {
+        aspect-ratio: 250 / 100;
+      }
     }
   }
 
@@ -165,7 +184,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 50%; //Adjust that modal input size
+    width: 90%; //Adjust that modal input size
     max-height: 90vh;
     background: white;
 
@@ -176,6 +195,14 @@
 
     .top {
       margin-bottom: 2rem;
+    }
+
+    @include respond-to("medium") {
+      width: 60%;
+    }
+
+    @include respond-to("large") {
+      width: 50%;
     }
   }
 

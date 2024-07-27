@@ -18,7 +18,7 @@ test("adds category UI", async ({ page }) => {
   expect(count).toBe(1);
 });
 
-test("remove category", async ({ page }) => {
+test("removes category", async ({ page }) => {
   await page.goto("http://localhost:5173/");
 
   const button = await page.locator(".welcome-page__btn");
@@ -40,7 +40,7 @@ test("remove category", async ({ page }) => {
   expect(hasNoChildren).toBe(true);
 });
 
-test("edit category name", async ({ page }) => {
+test("edits category name", async ({ page }) => {
   await page.goto("http://localhost:5173/");
 
   const button = await page.locator(".welcome-page__btn");
@@ -58,4 +58,27 @@ test("edit category name", async ({ page }) => {
 
   await page.fill(".category-box__name", "");
   await page.fill(".category-box__name", "edited name");
+});
+
+test("open close category window", async ({ page }) => {
+  await page.goto("http://localhost:5173/");
+
+  const button = await page.locator(".welcome-page__btn");
+  const isVisible = await button.isVisible();
+
+  if (isVisible) await button.click();
+  await page.click(".round-plus");
+
+  await page.fill("#category-name", "New Category");
+  await page.focus("#category-name");
+  await page.keyboard.press("Enter");
+  await page.click(".fa-circle-xmark");
+
+  const openButton = await page.locator(".button-open");
+  await openButton.click();
+  const categoryBox = openButton.locator("..").locator("..");
+  await expect(categoryBox).toHaveClass(/active/);
+
+  await openButton.click();
+  await expect(categoryBox).not.toHaveClass(/active/);
 });

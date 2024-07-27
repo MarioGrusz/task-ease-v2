@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { clear } from "console";
 
 test("adds category UI", async ({ page }) => {
   await page.goto("http://localhost:5173/");
@@ -59,7 +60,6 @@ test("edits category name", async ({ page }) => {
   await page.fill(".category-box__name", "");
   await page.fill(".category-box__name", "edited name");
 });
-
 test("open close category window", async ({ page }) => {
   await page.goto("http://localhost:5173/");
 

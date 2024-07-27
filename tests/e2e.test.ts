@@ -59,3 +59,5 @@ test("edit category name", async ({ page }) => {
   await page.fill(".category-box__name", "");
   await page.fill(".category-box__name", "edited name");
 });
+
+//push more e2e tests

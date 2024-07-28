@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 20.x]
+        node-version: [20.x]
 
     steps:
       - name: Checkout repository
@@ -43,7 +43,7 @@ jobs:
           NODE_ENV: development
 
       - name: Wait for server to start
-        run: npx wait-on http://localhost:5173 # Adjust the port if necessary
+        run: npx wait-on http://localhost:5173
 
       - name: Run E2E Tests
         run: npx playwright test

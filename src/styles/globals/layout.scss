@@ -1,4 +1,4 @@
-@use "../util" as *;
+@use "../utils" as *;
 
 ::-webkit-scrollbar {
   display: none;
@@ -10,7 +10,7 @@
 
 body {
   font-family: "Poppins", sans-serif;
-  min-height: 100vh;
+  // min-height: 100vh;
   background-color: var(--first-background-color);
   padding: 0.5rem 0;
   display: flex;
@@ -18,10 +18,26 @@ body {
   justify-content: center;
   align-items: center;
 
-  @include breakpoint-down(small) {
-    max-width: 100%;
-    padding: 0;
-  }
+  // @include respond-to("small") {
+  //   background-color: red;
+  // }
+
+  // @include respond-to("medium") {
+  //   background-color: violet;
+  // }
+
+  // @include respond-to("large") {
+  //   background-color: yellow;
+  // }
+
+  // @include respond-to("extra-large") {
+  //   background-color: purple;
+  // }
+
+  // @include respond-to("2extra-large") {
+  //   // background-color: gray;
+  //   background-color: #b7b7b7;
+  // }
 }
 
 .main-container {
@@ -29,6 +45,11 @@ body {
   height: 100vh;
   overflow: hidden;
   display: block;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 img {

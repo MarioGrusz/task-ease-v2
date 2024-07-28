@@ -1,4 +1,4 @@
-@use "../util" as *;
+@use "../utils/" as *;
 
 .timer-container {
   margin: 0 auto;
@@ -16,6 +16,16 @@
   align-items: center;
   margin-right: 0;
   position: relative;
+
+  @include respond-to("small") {
+    padding: 0 2rem;
+    column-gap: 1rem;
+  }
+
+  @include respond-to("extra-large") {
+    padding: 0 4rem;
+    column-gap: 2rem;
+  }
 }
 
 .timer__part {
@@ -52,7 +62,7 @@
 }
 
 .timer__btn--start {
-  background-color: var(--c-purple-300);
+  background-color: #9684fe;
 }
 
 .timer__btn--stop {

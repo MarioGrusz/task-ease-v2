@@ -122,6 +122,7 @@ const createTaskElementsContainer = (category: Category): HTMLElement => {
       return;
     }
     let inputValue = (inputElement as HTMLInputElement)?.value ?? "";
+    if (inputValue == null || inputValue.trim() === "") return;
     addTask(inputValue, category, tasksWrapper);
     (inputElement as HTMLInputElement).value = "";
   });
@@ -239,6 +240,9 @@ const toggleAccordion = (categoryItem: HTMLElement) => {
   const progressBar = categoryItem.querySelector(
     ".progress-bar"
   ) as HTMLElement;
+  const taskInstruction = categoryItem.querySelector(
+    "p"
+  ) as HTMLParagraphElement;
 
   taskElementsContainer.style.display = categoryItem.classList.contains(
     "active"
@@ -251,4 +255,7 @@ const toggleAccordion = (categoryItem: HTMLElement) => {
   progressBar.style.display = categoryItem.classList.contains("active")
     ? "block"
     : "none";
+  taskInstruction.style.visibility = categoryItem.classList.contains("active")
+    ? "hidden"
+    : "visible";
 };

@@ -1,4 +1,4 @@
-@use "../util" as *;
+@use "../utils" as *;
 
 .category-box-container {
   //anchor to attach dynamic elements
@@ -13,7 +13,7 @@
 
 .category-wrapper {
   display: flex;
-  min-height: 12rem;
+  min-height: max-content;
   flex-direction: row;
   justify-content: center;
   align-items: center;
@@ -109,28 +109,45 @@
   position: fixed;
   inset: 0;
   z-index: 2000;
+  padding-bottom: 3rem;
+  min-height: 200vh;
+
+  @include respond-to("small") {
+    padding: 0 5rem;
+  }
+
+  @include respond-to("medium") {
+    padding: 0 10rem;
+  }
+
+  @include respond-to("large") {
+    padding: 0 15rem;
+  }
+
+  @include respond-to("extra-large") {
+    padding: 0 15rem;
+    border: 1px solid green;
+  }
+
+  @include respond-to("2extra-large") {
+    padding: 0 25rem;
+  }
 }
 
 /* Items/Task To Do Container/Input Form - Create Single Item */
 
 .task-elements-container {
   display: none;
-  width: 100%;
+  width: 95%;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
   padding-top: 1rem;
 
   border-radius: 50px 50px 0 0;
-  min-height: 100vh;
   margin-top: 2rem;
   padding-left: 1rem;
   padding-right: 1rem;
-
-  //glassmorphism
-  background: rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(16.5px);
 }
 
 .task-input {

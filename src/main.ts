@@ -58,5 +58,39 @@ window.addEventListener("DOMContentLoaded", () => {
   updateCategoryCounter(categories);
   if (categoriesContainer) renderCategory(categoriesContainer, categories);
   getCurrentDate();
-  console.log("category", categories);
 });
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   const welcomePage = document.querySelector(".welcome-page__container");
+//   const itemsContainer = document.querySelector(".items-container");
+
+//   const leaveWelcomePage = () => {
+//     if (welcomePage) {
+//       welcomePage.classList.remove("visible");
+//       welcomePage.classList.add("hidden");
+//     }
+
+//     setTimeout(() => {
+//       if (itemsContainer) {
+//         itemsContainer.classList.remove("hidden");
+//         itemsContainer.classList.add("visible");
+//       }
+//     }, 500); // Wait for the transition to complete
+//   };
+
+//   if (categories.length === 0) {
+//     // No categories, show welcome page
+//     if (welcomePage && itemsContainer) {
+//       welcomePage.classList.add("visible");
+//       itemsContainer.classList.add("hidden");
+//     }
+//   }
+
+//   updateCategoryCounter(categories);
+
+//   if (categoriesContainer) {
+//     renderCategory(categoriesContainer, categories);
+//   }
+
+//   getCurrentDate();
+// });

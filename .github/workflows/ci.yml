@@ -47,7 +47,3 @@ jobs:
 
       - name: Run E2E Tests
         run: npx playwright test
-
-      - name: Stop server
-        if: always()
-        run: kill $(jobs -p)

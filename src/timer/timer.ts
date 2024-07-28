@@ -16,7 +16,7 @@ if (timeBoxForm) {
     const taskId = (form[1] as HTMLInputElement).value;
     let remainingSecondsInput = form[2] as HTMLInputElement;
 
-    const remainingSeconds = Number(remainingSecondsInput.value);
+    const remainingSeconds = Number(remainingSecondsInput.value) * 60;
 
     if (isNaN(remainingSeconds)) {
       console.error("The remaining seconds value must be a number.");
@@ -111,10 +111,12 @@ export class Timer {
 
     this.interval = setInterval(() => {
       if (this.remainingSeconds > 0) {
+        this.updateInterfaceControls();
         this.remainingSeconds--;
         this.updateInterfaceTime();
 
         if (this.remainingSeconds === 0) {
+          this.updateInterfaceControls();
           this.stop();
         }
       } else {
@@ -129,10 +131,25 @@ export class Timer {
       this.taskId,
       this.remainingSeconds
     );
-    Task.toggleCompleted(this.parentCategoryId, this.taskId, true);
-    Task.updateCheckBoxUi(this.taskId, true);
     clearInterval(this.interval);
     this.interval = 0;
+    this.updateInterfaceControls();
+    if (this.remainingSeconds === 0) {
+      Task.toggleCompleted(this.parentCategoryId, this.taskId, true);
+      Task.updateCheckBoxUi(this.taskId, true);
+    }
+  }
+
+  updateInterfaceControls() {
+    if (this.interval === null || this.interval === 0) {
+      this.element.start_stop_btn.innerHTML = `<p>play</p>`;
+      this.element.start_stop_btn.classList.add("timer__btn--start");
+      this.element.start_stop_btn.classList.remove("timer__btn--stop");
+    } else {
+      this.element.start_stop_btn.innerHTML = `<p>pause</p>`;
+      this.element.start_stop_btn.classList.add("timer__btn--stop");
+      this.element.start_stop_btn.classList.remove("timer__btn--start");
+    }
   }
 
   static getHTML(): string {

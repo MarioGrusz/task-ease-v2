@@ -4,7 +4,7 @@
 
 TaskEase is a web-based application developed using HTML, SCSS, Vanilla JavaScript, and TypeScript. It helps users organize their learning activities by creating customized categories such as "Spanish Language" or "Programming" and allocating specific time intervals to individual tasks, such as "20 minutes for verbs" or "5 minutes for vocabulary."
 
-<img width="1179" alt="ai_mobiles" src="https://github.com/MarioGrusz/task-ease-v2/assets/3mobiles_task.png">
+<img width="1179" alt="ai_mobiles" src="https://github.com/MarioGrusz/task-ease-v2/issues/1#issue-2483169553">
 
 # Features
 

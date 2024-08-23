@@ -18,10 +18,6 @@ test.beforeEach(async ({ page }) => {
   await page.click(".fa-circle-xmark");
 });
 
-test.afterEach(async ({ page }) => {
-  await page.close();
-});
-
 test("adds category UI", async ({ page }) => {
   const categories = await page.locator(".category-wrapper");
   const count = await categories.count();
@@ -30,18 +26,17 @@ test("adds category UI", async ({ page }) => {
 
 test("removes category", async ({ page }) => {
   await page.click(".delete-btn");
-  const categoriesContainer = await page.locator(".category-box-container");
-  const hasNoChildren = await categoriesContainer.evaluate(
-    (node) => node.children.length === 0
-  );
-  expect(hasNoChildren).toBe(true);
+  const categories = await page.locator(".category-wrapper");
+  expect(await categories.count()).toBe(0);
 });
 
 test("edits category name", async ({ page }) => {
   await page.click(".edit-btn");
-
-  await page.fill(".category-box__name", "");
   await page.fill(".category-box__name", "edited name");
+  await page.locator(".category-box__name").blur();
+
+  const categoryName = await page.locator(".category-box__name").inputValue();
+  expect(categoryName).toBe("edited name");
 });
 
 test("open close category window", async ({ page }) => {
@@ -61,9 +56,9 @@ test("add task UI inside a category", async ({ page }) => {
   await page.fill(".task-input", "Sample Task");
   await page.keyboard.press("Enter");
 
-  const tasks = await page.locator(".tasks-wrapper");
-  const count = await tasks.count();
-  expect(count).toBe(1);
+  const tasks = await page.locator(".tasks-wrapper .task-item");
+  expect(await tasks.count()).toBe(1);
+  expect(await tasks.first().textContent()).toContain("Sample Task");
 });
 
 test("visual update of checkbox and progress bar visual ratio", async ({
@@ -105,11 +100,9 @@ test("visual update of timer", async ({ page }) => {
   await page.keyboard.press("Enter");
 
   const minutes = await page.locator(".timer__part--minutes");
-  const minutesInnerText = await minutes.evaluate((el) => el.innerHTML);
+  expect(await minutes.textContent()).toContain("01");
   const seconds = await page.locator(".timer__part--seconds");
-  const secondsInnerText = await seconds.evaluate((el) => el.innerHTML);
-  expect(minutesInnerText).toContain("01");
-  expect(secondsInnerText).toContain("00");
+  expect(await seconds.textContent()).toContain("00");
 });
 
 test("visual update of timer after few sec of work", async ({ page }) => {
@@ -147,17 +140,14 @@ test("visual update of start/pause button UI", async ({ page }) => {
   await page.keyboard.press("Enter");
 
   const startButton = await page.locator(".timer__start");
-  const buttonText = await startButton.locator(":scope > *:first-child");
   await startButton.click();
   await page.waitForTimeout(3000);
 
-  const initialText = await buttonText.textContent();
+  expect(await startButton.textContent()).toContain("pause");
+
   await startButton.click();
   await page.waitForTimeout(3000);
-  const updatedText = await buttonText.textContent();
-
-  expect(initialText).toContain("pause");
-  expect(updatedText).toContain("play");
+  expect(await startButton.textContent()).toContain("play");
 });
 
 test("visual update progressBar and checkbox after timer reached zero", async ({
